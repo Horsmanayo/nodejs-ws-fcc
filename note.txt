@@ -1,0 +1,158 @@
+const amount= 12
+
+if(amount < 10){
+    console.log('hi');
+}else{
+    console.log('hey')
+}
+
+console.log('hey its my first note app'
+
+**********************************************
+
+Global  - no window
+
+__dirname - path to current directory
+
+__filename - file name
+
+require - function to use modules(CommonJS)
+
+module - infor about current module (file)
+
+process - infor about env where the program is being executed
+
+***************************************************************************
+
+// Modules - Encapsulated code 
+// every file in node is a module 
+
+const {john, peter} = require('./firstModule')
+const sayHi =  require('./secondModule-utils')
+const data = require('./3rd-flavor')
+require('./4th-ming-grenade')
+
+*******************************************************************************************************
+
+USING THE OS MODULE
+
+const os = require('os')
+
+//info about current user 
+const user = os.userInfo()
+
+console.log(user)
+
+//method returns the system uptime in seconds
+
+console.log(`The system uptime is ${os.uptime() * 60} minutes`);
+
+const currentOs = {
+    name: os.type(),
+    release: os.release(),
+    totalMem: os.totalmem(),
+    freeMemory: os.freemem(),
+}
+
+console.log(currentOs);
+
+******************************************************************************************************
+
+
+USING THE PATH MODULE
+
+const path = require('path')
+
+console.log(path.sep)
+
+const filePath = path.join('/content', 'subfolder', 'test.txt')
+
+console.log(filePath)
+
+const base = path.basename(filePath)
+
+console.log(base);
+
+const absolute = path.resolve(__dirname, 'content', 'subfolder', 'test.txt')
+
+console.log(absolute);
+
+
+*****************************************************************************************************
+
+USING THE readFileSync TO READ A FILE, AND USING THE writeFileSync TO CREATE A FILE OR APPEND AN EXISTING DATA IN A FILE
+(SYNCHRONOUS CALL)
+
+const {readFileSync, writeFileSync} = require('fs')
+
+const first = readFileSync('./content/text.txt', 'utf8')
+const second = readFileSync('./content/subfolder/test.txt', 'utf8')
+
+console.log(first, second)
+
+const third = writeFileSync(
+    './content/third.txt', 
+    'How are you doing today', 
+    { flag: 'a'}
+)
+
+IN THIS CASE, EVERY TASK GOES SYNCHRONOUSLY, WHICH MEANS THEY RUN AFTER THE FIRST ONE COMPLETES
+
+THE THIRD PARAMETER WITH THE FLAG A DUPLICATES THE DATA IN A FILE 
+
+************************************************************************************************************
+
+ASYNSCHRONOUS USE OF writeFile and readFileSync
+
+const {readFile, writeFile} = require('fs')
+
+readFile('./content/text.txt', 'utf8', (err, result) => {
+    if(err){
+        console.log(err);
+        return
+    } 
+    const firstTxt = result
+    readFile('./content/subfolder/test.txt', 'utf8', (err, result)=> {
+        if(err){
+            console.log(err);
+            return
+        } 
+        const secondTxt = result
+        writeFile(
+            './content/async-result.txt', 
+            `Here is the result: ${firstTxt, secondTxt}`
+        ,(err, result) => {
+            if(err){
+                console.log(err);
+                return
+            }
+            console.log(result);
+        })
+    })
+})
+
+IN THIS CASE, A TASK EXECUTE AND OFFLOADS FOR THE NEXT TASK TO RUN, WHICH MEANS THEY RUN SIMULTANEOUSLY WITHOUT A TASK STOPPING THE OTHER FROM RUNNNING
+
+
+****************************************************************************************
+
+SETTING UP THE HTTP MODULE 
+
+const http = require('http')
+
+
+const server = http.createServer((req, res) => {
+    if(req.url === '/'){
+        res.end('Welcome to our homepage')
+    }
+    if(req.url === '/about'){
+        res.end('A brief history about our company')
+    }
+    res.end(
+        ` 
+            <h1>Oops!</h1>
+            <p>We cant seem to find the page you are looking for</p>
+            <a href='/'>Back home</a>
+        `
+    )
+}).listen(5000)
