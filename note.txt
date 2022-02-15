@@ -156,3 +156,117 @@ const server = http.createServer((req, res) => {
         `
     )
 }).listen(5000)
+
+*********************************************************************************
+
+EXPLANATION ON ASYNSCHRONOUS CALLBACK FUNCTIONS, AND HOW IT OFFLOADS AFTER CHECKING FOR OTHER CODES THAT NEEDS IMMEDIATE EXECUTION
+console.log('first task');
+
+setTimeout(() => {
+    console.log('second task')
+}, 0)
+
+console.log('third task')
+
+THE DIFFERENCE BETWEEN setTimeout and setInterval  IS THE SECOND PARAMETER FOR setTimeout
+MAKES THE FUNCTION RUN AFTER THE SET TIME FRAME, WHILE THE setInterval RUNS ON EVERY COUNT OF THE SECOND PARAMETER
+
+******************************************************************************************
+WAY ONE AND TWO OF USING PROMISES IN NODE 
+
+
+const { readFile, writeFile } = require('fs') 
+const util = require('util')
+const readFilePromise = util.promisify(readFile)
+const writeFilePromise = util.promisify(writeFile)
+
+
+const start = async() => {
+    try{
+        const first = await readFilePromise('./content/text.txt', 'utf8')
+        const second = await readFilePromise('./content/subfolder/test.txt', 'utf8')
+        await writeFilePromise('./content/result-mind.txt', `This is awesome: ${first}, ${second}`)
+        console.log(first, second);
+    }catch (error){
+        console.log(error );
+    }
+}
+
+
+
+start()
+
+
+
+// const getText = (path) => {
+//     return new Promise((resolve, reject)=> {
+//         readFile(path, 'utf8', (err, data) => {
+//             if(err){
+//                 reject(err)
+//             }else {
+//                 resolve (data)
+//             }
+            
+//         })
+//     })
+// }
+
+// getText('./content/text.txt')
+//     .then(result => console.log(result))
+//     .catch(err => console.log(err))
+
+*********************************************************************************************
+
+THIRD WAY OF USING PROMISES
+
+const { readFile, writeFile } = require('fs').promises 
+
+const start = async() => {
+    try{
+        const first = await readFile('./content/text.txt', 'utf8')
+        const second = await readFile('./content/subfolder/test.txt', 'utf8')
+        await writeFile('./content/result-mind.txt', `This is awesome: ${first}, ${second}`)
+        console.log(first, second);
+    }catch (error){
+        console.log(error );
+    }
+}
+
+
+
+start()
+
+************************************************************************************************
+
+USING THE EVENT EMITTER, CREATING A NEW INSTANCE OF EMITTER
+
+const EventEmitter = require('events')
+
+const customEmitter = new EventEmitter()
+
+customEmitter.on('response', (name, id) => {
+    console.log(`data received name: ${name}, id: ${id}`);
+})
+
+customEmitter.on('response', () => {
+    console.log(`some other logic here`);
+})
+
+customEmitter.emit('response', 'john', 34)
+
+**************************************************************************************************************
+EXPLAINING HOW EVENT EMITTER IS AN UNDERGROUND FUNCTION IN MOST OF NODE MODULES USING HTTP 
+
+const http = require('http')
+
+const server = http.createServer()
+
+server.on('request', (req, res) => {
+    res.end('Welcome to our homepage')
+})
+
+server.listen(5000)
+
+***************************************************************************************************************
+
+
